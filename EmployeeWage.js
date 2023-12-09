@@ -42,6 +42,7 @@ function computeWage(){
             ele.MonthlyWage=0
             let leave = 0
             let week = 0
+            let partCount = 0
             for (let i = 0; i < 30; i++) {
                 week++
                 let attendance=attendanceCheck(ele)
@@ -49,7 +50,8 @@ function computeWage(){
                 
                 if(week>7){
                 leave=0
-                week=0}
+                week=0
+                partCount=0}
                 if (attendance=="Absent" && leave<1) {
                     ele.workRecord.push({Day:i+1,workHrs:workHrs,wage:workHrs*20,attendance:attendance})
                     leave=1
@@ -57,6 +59,8 @@ function computeWage(){
                 else if(attendance=="Present" || leave==1){
                     attendance="Present"
                     workHrs=computePartTime(attendance)
+                    workHrs==4 ? partCount++:partCount
+                    if(partCount==2){workHrs=8}
                     ele.workRecord.push({Day:i+1,workHrs:workHrs,wage:workHrs*20,attendance:attendance})
                 }
             ele.MonthlyWage=ele.workRecord.reduce((sum,ele)=>ele.wage+sum,0)
@@ -66,8 +70,7 @@ function computeWage(){
 
 computeWage()
 
-for(let i=0;i<30;i++){
-console.log(employeeDetails[1].workRecord[i]);}
+console.table(employeeDetails[0].workRecord)
 
 // can take only one leave in each week
 // can have only 2 part time works in week
